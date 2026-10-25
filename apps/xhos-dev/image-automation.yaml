@@ -1,0 +1,53 @@
+# polls the registry for tags
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: xhos-dev
+spec:
+  image: git.xhos.dev/xhos/xhos.dev
+  interval: 1m
+---
+# picks the newest main-* tag by its commit timestamp
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: xhos-dev
+spec:
+  imageRepositoryRef:
+    name: xhos-dev
+  filterTags:
+    pattern: '^main-(?P<ts>\d{14})-[0-9a-f]+$'
+    extract: '$ts'
+  policy:
+    numerical:
+      order: asc
+---
+# writes the policy's pick into the marked image: lines and commits it
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: xhos-dev
+spec:
+  interval: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        name: flux
+        email: flux@xhos.dev
+      messageTemplate: |
+        xhos-dev: bump image
+        {{ range .Changed.Changes }}
+        {{ .OldValue }} -> {{ .NewValue }}
+        {{ end }}
+    push:
+      branch: main
+  update:
+    path: ./apps/xhos-dev
+    strategy: Setters
