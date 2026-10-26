@@ -1,0 +1,9 @@
+# drains and node upgrades must leave at least one pod serving
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: xhos-dev
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {app: xhos-dev}

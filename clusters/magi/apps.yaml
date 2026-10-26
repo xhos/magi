@@ -4,6 +4,8 @@ metadata:
   name: apps
   namespace: flux-system
 spec:
+  dependsOn: # cluster plumbing first, apps after
+    - name: infrastructure
   interval: 10m # re-apply even without new commits, which undoes manual drift
   path: ./apps
   prune: true # deleted from git = deleted from cluster
