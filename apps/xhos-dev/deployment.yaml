@@ -15,7 +15,7 @@ spec:
         runAsUser: 65534 # nobody; the image has no users of its own
       containers:
         - name: web
-          image: git.xhos.dev/xhos/xhos.dev:main-20261025193845-c6444b0 # {"$imagepolicy": "xhos-dev:xhos-dev"}
+          image: git.xhos.dev/xhos/xhos.dev:main-20261026004940-e803c2a # {"$imagepolicy": "xhos-dev:xhos-dev"}
           ports: [{containerPort: 8080}]
           readinessProbe: # not added to the Service until / answers
             httpGet: {path: /, port: 8080}
