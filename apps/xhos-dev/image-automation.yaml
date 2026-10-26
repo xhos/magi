@@ -45,7 +45,7 @@ spec:
         xhos-dev: bump image
         {{ range .Changed.Changes }}
         {{ .OldValue }} -> {{ .NewValue }}
-        {{ end }}
+        {{- end }}
     push:
       branch: main
   update:
